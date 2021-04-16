@@ -1,7 +1,7 @@
 using System;
 namespace ej_transporte
 {
-    public class Avion : Transporte
+    public class Avion : Transporte, IAereo
     {
         public Avion(int pasajeros) : base(pasajeros)
         {
@@ -13,11 +13,19 @@ namespace ej_transporte
         }
         public override void Detenerse()
         {
-            Console.WriteLine("Estoy aterrizando...");
+            Console.WriteLine("Estoy descendiendo...");
         }
         public override string ToString()
         {
             return "Avión";
+        }
+        public void Despegar()
+        {
+            Console.WriteLine("Estoy despegando...");
+        }
+        public void Aterrizar()
+        {
+            Console.WriteLine("Estoy aterrizando...");
         }
     }
 }

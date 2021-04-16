@@ -11,7 +11,6 @@ namespace ej_transporte
         public abstract void Detenerse();
         public int Pasajeros
         {
-            set{ pasajeros = value; }
             get{ return pasajeros; }
         }
     }
