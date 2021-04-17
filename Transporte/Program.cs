@@ -6,15 +6,23 @@ namespace ej_transporte
     {
         static void Main(string[] args)
         {
-            List<Transporte> listaTransportes = new List<Transporte>
+            List<Avion> listaAviones = new List<Avion>()
             {
-                new Automovil(2), new Automovil(3), new Automovil(10), new Automovil(15), new Automovil(23),
-                new Avion(50), new Avion(25), new Avion(30), new Avion(36), new Avion(42)
+                new Avion(5), new Avion(20), new Avion(7), new Avion(32), new Avion(13)
             };
-            for (int i = 0; i < listaTransportes.Count; i++)
+            List<Automovil> listaAutomovil = new List<Automovil>()
             {
-                Console.WriteLine("{0} {1}: {2} pasajeros",listaTransportes[i].ToString(),i+1,listaTransportes[i].Pasajeros);
+                new Automovil(4), new Automovil(8), new Automovil(12), new Automovil(20), new Automovil(25)
+            };
+            for (int i = 0; i < listaAviones.Count; i++)
+            {
+                Console.WriteLine("{0} {1}: {2}",listaAviones[i].ToString(),i+1,listaAviones[i].Pasajeros);
             }
+            for (int i = 0; i < listaAviones.Count; i++)
+            {
+                Console.WriteLine("{0} {1}: {2}",listaAutomovil[i].ToString(),i+1,listaAutomovil[i].Pasajeros);
+            }
+
         }
     }
 }
