@@ -13,7 +13,7 @@ namespace Logica
         {
             this.customMsg = customMsg;
         }
-        public override string Message => ($"{this} : {customMsg}");
+        public override string Message => ($"{customMsg} : {base.Message}");
         public override string ToString()
         {
             return "NoEsParException";
