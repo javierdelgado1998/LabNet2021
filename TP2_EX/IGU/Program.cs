@@ -35,6 +35,7 @@ namespace IGU
             Console.WriteLine("---------------EJERCICIO 4--------------");
             try
             {
+                // Si se pasa un numero impar lanza una excepción, caso contrario no pasa nada.
                 exceptionsInit.ThrowNoEsParException("Mensaje personalizado", 3);
             }
             catch (NoEsParException e)
