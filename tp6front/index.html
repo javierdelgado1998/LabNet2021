@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Formulario</title>
+</head>
+<style>
+    #contactForm {
+        width: 50%;
+    }
+</style>
+<body>
+    <div class="container">
+        <h2>Contact</h2>
+        <h3>Complete your data</h3>
+        <form name="myForm" action="" onsubmit="return validateForm()" method="post" id="contactForm">
+
+            <h4>Personal info</h4>
+            <label for="_fname">First Name:</label>
+            <input type="text" class="form-control" id="_fname" name="firstname" placeholder="Your name..">
+
+            <label for="_lname">Last Name:</label>
+            <input type="text" class="form-control" id="_lname" name="lastname" placeholder="Your last name..">
+        
+            <label for="_age">Age:</label>
+            <input style="width: 200px; display: flex;" type="number" class="form-control" id="_age" name="age" placeholder="Your age..">
+            
+            <input type="radio" name="gender" id="male">
+            <label for="male">Male</label>
+
+            <input type="radio" name="gender" id="female">
+            <label for="female">Female</label>
+
+            <input type="radio" name="gender" id="other" checked>
+            <label for="other">Other</label>
+
+
+            <h4>Additional info</h4>
+            <label for="_company">Company:</label>
+            <input type="text" class="form-control" id="_company" name="company" placeholder="Your Company..">
+
+            <input type="submit" value="Submit" class="btnStyle">
+            <button type="button" class="btnStyle" onclick="clearFields()">Clear</button>
+
+        </form>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>
