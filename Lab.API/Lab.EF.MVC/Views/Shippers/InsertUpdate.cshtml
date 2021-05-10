@@ -1,0 +1,66 @@
+﻿@model Lab.EF.MVC.Models.ShippersView
+@{
+    ViewBag.Title = "Shippers";
+}
+
+<!DOCTYPE html>
+<h1>Shippers Operations</h1>
+@using (Html.BeginForm("InsertUpdate", "Shippers", FormMethod.Post, new { onsubmit = "return validateForm()" }))
+{
+    <div class="form-group">
+        <label>Company Name:</label>
+        @Html.TextBoxFor(s => s.CompanyName, new { Model.CompanyName, @placeholder = "Enter Company name..", @class = "form-control" })
+        @Html.LabelFor(s => s.CompanyName, " ", new { @id = "lnameID", @style = "color:red;" })
+    </div>
+    <div class="form-group">
+        <label>Phone:</label>
+        @Html.TextBoxFor(s => s.Phone, new { Model.Phone, @placeholder = "Enter Phone..", @class = "form-control" })
+        @Html.LabelFor(s => s.Phone, " ", new { @id = "lphoneID", @style = "color:red;" })
+    </div>
+    <input type="submit" class="btn btn-success" value="Save" id="guardar" />
+    <input type="reset" class="btn btn-danger" value="Clear" />
+}
+<script>
+    function validateForm()
+    {
+        if (validateName() & validatePhone())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function validateName()
+    {
+        var companyField = $("#CompanyName").val();
+        if (companyField.length > 0 && companyField.length <= 40)
+        {
+            $("#lnameID").text("");
+            return true;
+        }
+        else
+        {
+            $("#lnameID").text("This field cannot be empty, and must be less than or equal to 40 characters.");
+            $("#lnameID").focus();
+            return false;
+        }
+    }
+
+    function validatePhone()
+    {
+        var phoneField = $("#Phone").val();
+        if (phoneField.length <= 24)
+        {
+            $("#lphoneID").text("");
+            return true;
+        }
+        else
+        {
+            $("#lphoneID").text("This field must be less than or equal to 24 characters.");
+            $("#lphoneID").focus();
+            return false;
+        }
+    }
+</script>
+
+
