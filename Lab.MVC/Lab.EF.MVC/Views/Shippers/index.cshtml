@@ -2,17 +2,47 @@
 @{
 
     ViewBag.Title = "Shippers";
-
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
-<h2>Primo's Shippers Company</h2>
-<nav class="navbar navbar-light bg-light">
-    <form class="form-inline">
-        @Html.ActionLink("Select Top(3)", "index", new { value = 3 }, new { @class = "btn btn-primary" })
-        @Html.ActionLink("Get All", "index", "", new { @class = "btn btn-primary" })
-    </form>
-</nav>
+<html>
+<head>
+    <script>
+        function Delete(id) {
+            var isConfirmed = confirm('Delete this?');
+            if (isConfirmed) {
+                $.ajax
+                    (
+                        {
+                            type: "GET",
+                            url: "/Shippers/Delete/" + id,
+                            success: function (data) {
+                                $("#shipper_" + id).remove();
+                            },
+                            error: function () {
+                                alert("Error occured!!")
+                            }
+                        });
+            }
+        }
+
+        function selectTop()
+        {
+            var quantity = document.getElementById("topID").value;
+            document.location = "/?value=" + quantity;
+        }
+
+    </script>
+</head>
+<body>
+    <h2>@ViewBag.Title.</h2>
+    <h3>@ViewBag.Message</h3>
+    <h2>Primo's Shippers Company</h2>
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="topID">
+            <a href="#" onclick="selectTop()" class="btn btn-primary">Select Top</a>
+            @Html.ActionLink("Refresh", "index", "", new { @class = "btn btn-primary" })
+        </form>
+    </nav>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -24,11 +54,11 @@
         <tbody>
             @foreach (var shipper in Model)
             {
-                <tr>
+                <tr id="shipper_@shipper.Id">
                     <th scope="row">@shipper.Id</th>
                     <td>@shipper.CompanyName</td>
                     <td>@shipper.Phone</td>
-                    <td>@Html.ActionLink("Delete", "Delete", new { id = shipper.Id }, new { @class = "btn btn-danger", onclick="return confirm('Delete this?')" })</td>
+                    <td><a href="#" onclick=Delete(@shipper.Id) class="btn btn-danger">Delete</a></td>
                     <td>@Html.ActionLink("Update", "InsertUpdate", new { id = shipper.Id, @class = "ShipperView" }, new { @class = "btn btn-info" })</td>
                 </tr>
             }
@@ -37,3 +67,5 @@
     <div>
         @Html.ActionLink("Insert New", "InsertUpdate", "", new { @class = "btn btn-success" })
     </div>
+</body>
+</html>

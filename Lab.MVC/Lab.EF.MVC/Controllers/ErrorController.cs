@@ -9,7 +9,6 @@ namespace Lab.EF.MVC.Controllers
 {
     public class ErrorController : Controller
     {
-        // GET: Error
         public ActionResult Index(string mssg)
         {
             ExceptionsView ex = new ExceptionsView

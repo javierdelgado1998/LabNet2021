@@ -79,16 +79,19 @@ namespace Lab.EF.MVC.Controllers
                 return RedirectToAction("index", "Error", new { mssg = ex.Message });
             }
         }
-        public ActionResult Delete(int id)
+
+        [HttpGet]
+        public bool Delete(int id)
         {
             try
             {
                 logic.Delete(id);
-                return RedirectToAction("index");
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                return RedirectToAction("index", "Error", new { mssg = ex.Message });
+                Response.StatusCode = 422;
+                return false;
             }
         }
     }
