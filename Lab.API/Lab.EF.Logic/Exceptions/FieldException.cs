@@ -8,6 +8,6 @@ namespace Lab.EF.Logic.Exceptions
 {
     public class FieldException : Exception
     {
-        public override string Message => "Field value is invalid";
+        public override string Message => "Field invalid input";
     }
 }

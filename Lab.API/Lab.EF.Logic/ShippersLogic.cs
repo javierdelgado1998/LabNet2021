@@ -26,13 +26,27 @@ namespace Lab.EF.Logic
         public void Delete(int id)
         {
             var shipper = GetShipperIfFound(id);
-            context.Shippers.Remove(shipper);
-            context.SaveChanges();
+            try
+            {
+                context.Shippers.Remove(shipper);
+                context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new Exception("No se pudo eliminar!");
+            }
         }
 
         public List<Shippers> GetAll()
         {
-            return context.Shippers.ToList();
+            try
+            {
+                return context.Shippers.ToList();
+            }
+            catch (Exception)
+            {
+                throw new Exception("No se pudo retornar registros!");
+            }
         }
 
         public void Update(Shippers shipper)

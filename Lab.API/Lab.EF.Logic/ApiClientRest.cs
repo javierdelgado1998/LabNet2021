@@ -36,7 +36,7 @@ namespace Lab.EF.Logic
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw ex;
             }
         }
 
