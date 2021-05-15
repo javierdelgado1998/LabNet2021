@@ -1,0 +1,24 @@
+﻿@model List<Lab.EF.MVC.Models.TerritoriesView>
+@{
+    ViewBag.Title = "Territories";
+}
+<h2>Territories</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Description</th>
+            <th scope="col">Region</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var territorie in Model)
+        {
+            <tr>
+                <th scope="row">@territorie.id</th>
+                <td>@territorie.descripcion</td>
+                <td>@territorie.region</td>
+            </tr>
+        }
+    </tbody>
+</table>
