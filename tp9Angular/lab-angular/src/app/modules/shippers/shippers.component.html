@@ -1,0 +1,90 @@
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Top navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <div class="row mt-3" [formGroup]="formSearch">
+    <div class="input-group">
+      <div class="form-outline">
+        <input type="number" class="form-control" formControlName="search" placeholder="Ingrese ID.." />
+      </div>
+      <button type="button" class="btn btn-primary"
+        (click)="searchShippers(formSearch.controls.search.value)">Find</button>
+    </div>
+    <div class="card border-success mb-3 mt-3" style="max-width: 18rem;" *ngIf="shippers">
+      <div class="card-header">Name: {{shippers.CompanyName}}</div>
+      <div class="card-body">Phone: {{shippers.Phone}}</div>
+    </div>
+  </div>
+
+  <body>
+    <h2>Primo's Shippers Company</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let shipper of listShippers;">
+          <th scope="row">{{shipper.ShipperID}}</th>
+          <td>{{shipper.CompanyName}}</td>
+          <td>{{shipper.Phone}}</td>
+          <td><button type="button" class="btn btn-danger" (click)="deleteShippers(shipper.ShipperID)">Delete</button></td>
+          <td><button type="button" class="btn btn-success" (click)="updateShippers(shipper)">Update</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <button type="button" class="btn btn-success">Open Dialog</button>
+      <button type="button" (click)="getShippers()" class="btn btn-primary">Refresh</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="form-group">
+        <label class="col-form-label">Company name:</label>
+        <input formControlName="name" type="text" class="form-control" placeholder="Enter name..">
+        <small *ngIf="nameCtrl?.invalid && nameCtrl?.touched" class="text-danger">Name is required</small>
+      </div>
+
+      <div class="form-group">
+        <label class="col-form-label">Phone:</label>
+        <input formControlName="phone" type="text" class="form-control" placeholder="Enter Phone..">
+        <small *ngIf="phoneCtrl?.invalid && phoneCtrl?.touched" class="text-danger">Phone is required</small>
+      </div>
+
+      <button [disabled]="!form.valid" type="submit" class="btn btn-success">Save</button>
+      <button type="button" class="btn btn-danger" (click)="onClear()">Clear</button>
+
+    </form>
+  </body>
+
+</main>
+
