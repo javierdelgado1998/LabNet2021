@@ -6,15 +6,27 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormComponent } from './form/form.component';
 import { ShippersComponent } from './shippers/shippers.component';
 
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatCardModule} from '@angular/material/card';
+import { UpdateComponent } from './update/update.component';
+
 @NgModule({
   declarations: [
-    FormComponent, ShippersComponent
+    FormComponent, ShippersComponent, UpdateComponent
   ],
   imports: [
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatCardModule
   ]
 })
 export class ModulesModule { }

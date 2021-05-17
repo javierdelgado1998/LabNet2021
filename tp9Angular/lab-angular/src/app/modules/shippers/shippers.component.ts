@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { FormComponent } from '../form/form.component';
 import { Shippers } from './models/shippers';
 import { ShippersService } from './shippers.service';
-
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -24,10 +26,8 @@ export class ShippersComponent implements OnInit {
     return this.form.get('phone');
   }
 
-  constructor(private formBuilder: FormBuilder,
-    private shippersService: ShippersService,
-  ) {
-
+  constructor(private formBuilder: FormBuilder, private shippersService: ShippersService, private router: Router) {
+    this.getShippers();
   }
 
   ngOnInit(): void {
@@ -104,8 +104,6 @@ export class ShippersComponent implements OnInit {
     )
   }
 
-
-
   onClear(): void {
 
     console.log(this.form);
@@ -118,5 +116,13 @@ export class ShippersComponent implements OnInit {
     }
 
   }
+
+  goToForm() {
+    this.router.navigateByUrl('shippers/form');
+  }
+  goToUpdate(id: number) {
+    this.router.navigateByUrl('shippers/update/id')
+  }
+
 
 }

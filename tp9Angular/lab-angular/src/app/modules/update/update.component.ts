@@ -1,22 +1,19 @@
-import { invalid } from '@angular/compiler/src/render3/view/util';
+
 import { Component, Inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Shippers } from '../shippers/models/shippers';
 import { ShippersService } from '../shippers/shippers.service';
 
-
-
-
-
 @Component({
-  selector: 'app-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css']
+  selector: 'app-update',
+  templateUrl: './update.component.html',
+  styleUrls: ['./update.component.css']
 })
-export class FormComponent implements OnInit {
-
+export class UpdateComponent implements OnInit {
 
   form: FormGroup;
+  public shipper: Shippers
 
   get nameCtrl(): AbstractControl {
     return this.form.get('name');
@@ -26,12 +23,15 @@ export class FormComponent implements OnInit {
     return this.form.get('phone');
   }
 
-  constructor(private fb: FormBuilder, private saveService: ShippersService) { }
+  constructor(private fb: FormBuilder, private saveService: ShippersService, private router:ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.saveService.readShippers(this.router.snapshot.params.id).subscribe((result)=>{
+      this.shipper = result
+    });
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      phone: ['', Validators.required]
+      name: [this.nameCtrl, Validators.required],
+      phone: [this.phoneCtrl, Validators.required]
     });
   }
 
@@ -39,11 +39,11 @@ export class FormComponent implements OnInit {
     var shippers = new Shippers();
     shippers.CompanyName = this.form.get('name').value;
     shippers.Phone = this.form.get('phone').value;
-    this.saveService.postShippers(shippers).subscribe(
+    this.saveService.updateShippers(shippers).subscribe(
       (response: Shippers) => console.log(response),
       (error: any) => alert('Ocurio un error!'),
       () => {
-        alert('Empleado agregado con exito'),
+        alert('Empleado updateado con exito'),
           this.onClear()
       }
     );
@@ -63,5 +63,5 @@ export class FormComponent implements OnInit {
     }
 
   }
-
+  
 }

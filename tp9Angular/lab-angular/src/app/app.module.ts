@@ -8,6 +8,10 @@ import { ModulesModule } from './modules/modules.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+
+
 
 
 @NgModule({
@@ -20,7 +24,9 @@ import { AppComponent } from './app.component';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    ModulesModule
+    ModulesModule,
+    MatIconModule,
+    MatButtonModule
   ],
   bootstrap: [AppComponent]
 })
