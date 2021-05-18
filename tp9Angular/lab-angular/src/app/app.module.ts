@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -26,7 +27,8 @@ import {MatButtonModule} from '@angular/material/button';
     ReactiveFormsModule,
     ModulesModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    NgbModule
   ],
   bootstrap: [AppComponent]
 })

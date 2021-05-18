@@ -1,6 +1,7 @@
 import { invalid } from '@angular/compiler/src/render3/view/util';
-import { Component, Inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Inject, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Shippers } from '../shippers/models/shippers';
 import { ShippersService } from '../shippers/shippers.service';
 
@@ -13,9 +14,12 @@ import { ShippersService } from '../shippers/shippers.service';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
-export class FormComponent implements OnInit {
-
-
+export class FormComponent implements OnInit, OnDestroy {
+  
+  sucessSubmit: boolean;
+  @Input() shipperChild: Shippers;
+  private subscription: Subscription = new Subscription();
+  @Output() messageEvent = new EventEmitter<boolean>();
   form: FormGroup;
 
   get nameCtrl(): AbstractControl {
@@ -36,17 +40,30 @@ export class FormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    var shippers = new Shippers();
-    shippers.CompanyName = this.form.get('name').value;
-    shippers.Phone = this.form.get('phone').value;
-    this.saveService.postShippers(shippers).subscribe(
-      (response: Shippers) => console.log(response),
-      (error: any) => alert('Ocurio un error!'),
-      () => {
-        alert('Empleado agregado con exito'),
-          this.onClear()
-      }
-    );
+    if(this.shipperChild.ShipperID == null)
+    {
+      var shippers = new Shippers();
+      shippers.CompanyName = this.form.get('name').value;
+      shippers.Phone = this.form.get('phone').value;
+      this.subscription.add(
+      this.saveService.postShippers(shippers).subscribe(
+        (response: Shippers) => {console.log(response)},
+        (error: any) => {this.sucessSubmit=false, this.messageEvent.emit(this.sucessSubmit), console.log(error)},
+        () => {this.sucessSubmit=true, this.messageEvent.emit(this.sucessSubmit), this.onClear()},
+      ));
+    }
+    else
+    {
+      this.shipperChild.CompanyName = this.form.get('name').value;
+      this.shipperChild.Phone = this.form.get('phone').value;
+      this.subscription.add(
+      this.saveService.updateShippers(this.shipperChild).subscribe(
+        (response: Shippers) => {console.log(response)},
+        (error: any) => {this.sucessSubmit=false, this.messageEvent.emit(this.sucessSubmit), console.log(error)},
+        () => {this.sucessSubmit=true, this.messageEvent.emit(this.sucessSubmit), this.onClear()},
+      ));
+    }
+
   }
   
   onClear(): void {
@@ -62,6 +79,10 @@ export class FormComponent implements OnInit {
       this.phoneCtrl.reset();
     }
 
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe;
   }
 
 }

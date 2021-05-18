@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { FormComponent } from '../form/form.component';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Shippers } from './models/shippers';
 import { ShippersService } from './shippers.service';
-import { Router } from '@angular/router';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap'
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -12,70 +11,50 @@ import { Router } from '@angular/router';
   templateUrl: './shippers.component.html',
   styleUrls: ['./shippers.component.css']
 })
-export class ShippersComponent implements OnInit {
+export class ShippersComponent implements OnInit, OnDestroy {
 
-  form: FormGroup;
+  closeResult = '';
+  private subscription: Subscription = new Subscription();
   formSearch: FormGroup;
   public shippers: Shippers;
   public listShippers: Shippers[] = [];
+  shipperParent: Shippers = new Shippers();
 
-  get nameCtrl(): AbstractControl {
-    return this.form.get('name');
-  }
-  get phoneCtrl(): AbstractControl {
-    return this.form.get('phone');
-  }
-
-  constructor(private formBuilder: FormBuilder, private shippersService: ShippersService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, 
+    private shippersService: 
+    ShippersService, 
+    private modalService:NgbModal) {
+    //Refrescar la lista
     this.getShippers();
   }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      name: new FormControl('', Validators.required),
-      phone: new FormControl('', Validators.required)
-    });
-
     this.formSearch = this.formBuilder.group({
       search: new FormControl('', Validators.required)
     });
-
-  }
-
-  save() {
-    var shippers = new Shippers();
-    shippers.CompanyName = this.form.get('name').value;
-    shippers.Phone = this.form.get('phone').value;
-    this.shippersService.postShippers(shippers).subscribe(
-      (response: Shippers) => console.log(response),
-      (error: any) => alert('Ocurio un error!'),
-      () => {
-        alert('Empleado agregado con exito'),
-          this.onClear(),
-          this.getShippers()
-      }
-    );
   }
 
   searchShippers(event) {
+    this.subscription.add(
     this.shippersService.readShippers(event).subscribe(
       resp => {
         this.shippers = resp;
       },
-      error => { console.log(error) });
+      error => { console.log(error) }));
   }
 
   getShippers() {
+    this.subscription.add(
     this.shippersService.getShippers().subscribe(
       resp => {
         this.listShippers = resp;
       },
-      error => { console.log(error) });
+      error => { alert("Ocurrio un error al mostrar los datos!")}));
   }
 
   deleteShippers(id: number ) {
     if (confirm('Are you sure to delete??')) {
-
+      this.subscription.add(
       this.shippersService.deleteShippers(id).subscribe(
         resp => {
           console.log(resp);
@@ -85,13 +64,12 @@ export class ShippersComponent implements OnInit {
           alert('Empleado eliminado con exito'),
             this.getShippers()
         },
-      )
+      ));
     }
   }
-
+  //Falta ver el tema de ng on Destroy
   updateShippers(shipper: Shippers) {
-    shipper.CompanyName = this.form.get('name').value;
-    shipper.Phone = this.form.get('phone').value;
+    this.subscription.add(
     this.shippersService.updateShippers(shipper).subscribe(
       resp => {
         console.log(resp);
@@ -101,28 +79,54 @@ export class ShippersComponent implements OnInit {
         alert('Empleado updateado con exito'),
           this.getShippers()
       },
-    )
+    ));
   }
 
-  onClear(): void {
+  open(content) {
+    this.modalService.open(content,{ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.shipperParent.ShipperID = null;
+      this.shipperParent.CompanyName = null;
+      this.shipperParent.Phone = null;
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
 
-    console.log(this.form);
-
-    if (this.nameCtrl) {
-      this.nameCtrl.reset();
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
     }
-    if (this.phoneCtrl) {
-      this.phoneCtrl.reset();
+  }
+
+  receiveMessage($event) {
+    if($event)
+    {
+      alert("Operacion exitosa!");
+      
+      this.getShippers();
     }
-
+    else
+    {
+      alert("Algo salio mal!");
+    }
   }
 
-  goToForm() {
-    this.router.navigateByUrl('shippers/form');
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
-  goToUpdate(id: number) {
-    this.router.navigateByUrl('shippers/update/id')
+
+  getUpdate(shipper: Shippers)
+  {
+    this.shipperParent.ShipperID = shipper.ShipperID;
+    this.shipperParent.CompanyName = shipper.CompanyName;
+    this.shipperParent.Phone = shipper.Phone;
   }
+
 
 
 }

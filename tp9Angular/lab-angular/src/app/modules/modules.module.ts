@@ -11,11 +11,10 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatCardModule} from '@angular/material/card';
-import { UpdateComponent } from './update/update.component';
 
 @NgModule({
   declarations: [
-    FormComponent, ShippersComponent, UpdateComponent
+    FormComponent, ShippersComponent
   ],
   imports: [
     CommonModule,
