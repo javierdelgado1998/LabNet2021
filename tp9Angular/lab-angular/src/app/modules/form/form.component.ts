@@ -5,10 +5,6 @@ import { Subscription } from 'rxjs';
 import { Shippers } from '../shippers/models/shippers';
 import { ShippersService } from '../shippers/shippers.service';
 
-
-
-
-
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
@@ -17,9 +13,12 @@ import { ShippersService } from '../shippers/shippers.service';
 export class FormComponent implements OnInit, OnDestroy {
   
   sucessSubmit: boolean;
+
   @Input() shipperChild: Shippers;
-  private subscription: Subscription = new Subscription();
   @Output() messageEvent = new EventEmitter<boolean>();
+
+  private subscription: Subscription = new Subscription();
+  
   form: FormGroup;
 
   get nameCtrl(): AbstractControl {
@@ -34,8 +33,8 @@ export class FormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      phone: ['', Validators.required]
+      name: ['', [Validators.required, Validators.maxLength(40), Validators.pattern('[a-zA-Z ]*')]],
+      phone: ['', [Validators.required, Validators.maxLength(24), Validators.pattern('^[0-9\()\-\-\+\ ]+$')]]
     });
   }
 

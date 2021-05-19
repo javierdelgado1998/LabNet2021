@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Shippers } from './models/shippers';
 import { ShippersService } from './shippers.service';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap'
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap'
 import { Subscription } from 'rxjs';
-
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-shippers',
@@ -13,20 +13,27 @@ import { Subscription } from 'rxjs';
 })
 export class ShippersComponent implements OnInit, OnDestroy {
 
+  cardShow: boolean = false;
   closeResult = '';
-  private subscription: Subscription = new Subscription();
-  formSearch: FormGroup;
-  public shippers: Shippers;
-  public listShippers: Shippers[] = [];
-  shipperParent: Shippers = new Shippers();
 
-  constructor(private formBuilder: FormBuilder, 
-    private shippersService: 
-    ShippersService, 
-    private modalService:NgbModal) {
-    //Refrescar la lista
+  public listShippers: Shippers[] = [];
+  public shippers: Shippers;
+  public shipperParent: Shippers = new Shippers();
+
+  private subscription: Subscription = new Subscription();
+  
+  formSearch: FormGroup;
+
+
+  constructor(private formBuilder: FormBuilder,
+    private shippersService:
+      ShippersService,
+    private modalService: NgbModal) {
+    //Refrescar la lista al iniciar..
     this.getShippers();
   }
+
+  // Metodos principales..
 
   ngOnInit(): void {
     this.formSearch = this.formBuilder.group({
@@ -35,60 +42,50 @@ export class ShippersComponent implements OnInit, OnDestroy {
   }
 
   searchShippers(event) {
+    this.cardShow = true;
     this.subscription.add(
-    this.shippersService.readShippers(event).subscribe(
-      resp => {
-        this.shippers = resp;
-      },
-      error => { console.log(error) }));
+      this.shippersService.readShippers(event).subscribe(
+        resp => {
+          this.shippers = resp;
+        },
+        error => { console.log(error), alert("No se encontro el registro solicitado!") },
+      ));
   }
 
   getShippers() {
     this.subscription.add(
-    this.shippersService.getShippers().subscribe(
-      resp => {
-        this.listShippers = resp;
-      },
-      error => { alert("Ocurrio un error al mostrar los datos!")}));
+      this.shippersService.getShippers().subscribe(
+        resp => {
+          this.listShippers = resp;
+        },
+        error => { alert("Ocurrio un error al mostrar los datos!") }));
   }
 
-  deleteShippers(id: number ) {
-    if (confirm('Are you sure to delete??')) {
-      this.subscription.add(
+  deleteShippers(id: number) {
+    this.subscription.add(
       this.shippersService.deleteShippers(id).subscribe(
         resp => {
           console.log(resp);
         },
-        (error: any) => alert('Ocurio un error!'),
+        (error: any) => Swal.fire('No se pudo eliminar el registro solicitado!', 'error'),
         () => {
-          alert('Empleado eliminado con exito'),
-            this.getShippers()
+          Swal.fire('Yeah!', 'Empleado eliminado con exito!', 'success')
+          this.getShippers()
         },
       ));
-    }
-  }
-  //Falta ver el tema de ng on Destroy
-  updateShippers(shipper: Shippers) {
-    this.subscription.add(
-    this.shippersService.updateShippers(shipper).subscribe(
-      resp => {
-        console.log(resp);
-      },
-      (error: any) => alert('Ocurio un error!'),
-      () => {
-        alert('Empleado updateado con exito'),
-          this.getShippers()
-      },
-    ));
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  // Metodos secundarios..
+
   open(content) {
-    this.modalService.open(content,{ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
-      this.shipperParent.ShipperID = null;
-      this.shipperParent.CompanyName = null;
-      this.shipperParent.Phone = null;
+      this.resetShipper();
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
@@ -104,29 +101,50 @@ export class ShippersComponent implements OnInit, OnDestroy {
   }
 
   receiveMessage($event) {
-    if($event)
-    {
-      alert("Operacion exitosa!");
-      
+    if ($event) {
+      Swal.fire('Yeah!', 'Operación exitosa!', 'success')
       this.getShippers();
     }
-    else
-    {
-      alert("Algo salio mal!");
+    else {
+      Swal.fire("La operación fallo!", 'error');
     }
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  getUpdate(shipper: Shippers)
-  {
+  getUpdate(shipper: Shippers) {
     this.shipperParent.ShipperID = shipper.ShipperID;
     this.shipperParent.CompanyName = shipper.CompanyName;
     this.shipperParent.Phone = shipper.Phone;
   }
 
+  closeCard() {
+    this.cardShow = false;
+  }
+
+  resetShipper() {
+    this.shipperParent.ShipperID = null;
+    this.shipperParent.CompanyName = null;
+    this.shipperParent.Phone = null;
+  }
+
+  handleWarningAlert(id: number) {
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this imaginary file!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    }).then((result) => {
+
+      if (result.isConfirmed) {
+
+        this.deleteShippers(id);
+
+      }
+    })
+
+  }
 
 
 }

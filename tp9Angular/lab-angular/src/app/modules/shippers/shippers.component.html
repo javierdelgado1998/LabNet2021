@@ -13,7 +13,9 @@
     </div>
   </div>
 
-  <div class="card border-success mb-3 mt-3" style="max-width: 18rem;" *ngIf="shippers">
+  <div class="card border-success mb-3 mt-3" style="max-width: 18rem;" *ngIf="cardShow">
+    <div><button type="button" mat-icon-button color="warn" (click)="closeCard()"><mat-icon>cancel</mat-icon></button></div>
+    <div class="card-header">ID: {{shippers.ShipperID}}</div>
     <div class="card-header">Name: {{shippers.CompanyName}}</div>
     <div class="card-body">Phone: {{shippers.Phone}}</div>
   </div>
@@ -32,7 +34,7 @@
           <th scope="row">{{shipper.ShipperID}}</th>
           <td>{{shipper.CompanyName}}</td>
           <td>{{shipper.Phone}}</td>
-          <td><button type="button" class="btn btn-danger" (click)="deleteShippers(shipper.ShipperID)"><mat-icon>delete_forever</mat-icon></button></td>
+          <td><button type="button" class="btn btn-danger" (click)="handleWarningAlert(shipper.ShipperID)"><mat-icon>delete_forever</mat-icon></button></td>
           <td><button type="button" class="btn btn-success" (click)="getUpdate(shipper); open(content)"><mat-icon>update</mat-icon></button></td>
         </tr>
       </tbody>
@@ -49,9 +51,9 @@
 
 <ng-template #content let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">New Shipper</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
+    <h2 class="modal-title" id="modal-basic-title">New Shipper</h2>
+    <button type="button" class="close" aria-label="Close" mat-icon-button color="warn" (click)="modal.dismiss('Cross click')">
+      <mat-icon>cancel</mat-icon>
     </button>
   </div>
   <div class="modal-body">
