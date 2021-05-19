@@ -2,8 +2,8 @@ import { invalid } from '@angular/compiler/src/render3/view/util';
 import { Component, Inject, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Shippers } from '../shippers/models/shippers';
-import { ShippersService } from '../shippers/shippers.service';
+import { Shippers } from '../models/shippers';
+import { ShippersService } from '../services/shippers.service';
 
 @Component({
   selector: 'app-form',
@@ -12,12 +12,12 @@ import { ShippersService } from '../shippers/shippers.service';
 })
 export class FormComponent implements OnInit, OnDestroy {
   
-  sucessSubmit: boolean;
+  private sucessSubmit: boolean;
 
   @Input() shipperChild: Shippers;
   @Output() messageEvent = new EventEmitter<boolean>();
 
-  private subscription: Subscription = new Subscription();
+  private subscription: Subscription;
   
   form: FormGroup;
 
@@ -32,6 +32,7 @@ export class FormComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder, private saveService: ShippersService) { }
 
   ngOnInit(): void {
+    this.subscription = new Subscription();
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(40), Validators.pattern('[a-zA-Z ]*')]],
       phone: ['', [Validators.required, Validators.maxLength(24), Validators.pattern('^[0-9\()\-\-\+\ ]+$')]]
@@ -82,6 +83,7 @@ export class FormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe;
+    console.log("form destroy");
   }
 
 }

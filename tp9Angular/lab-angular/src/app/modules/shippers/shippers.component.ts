@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Shippers } from './models/shippers';
-import { ShippersService } from './shippers.service';
+import { Shippers } from '../models/shippers';
+import { ShippersService } from '../services/shippers.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap'
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
@@ -13,15 +13,15 @@ import Swal from 'sweetalert2';
 })
 export class ShippersComponent implements OnInit, OnDestroy {
 
-  cardShow: boolean = false;
-  closeResult = '';
+  public cardShow: boolean = false;
+  public closeResult = '';
 
-  public listShippers: Shippers[] = [];
+  public listShippers: Shippers[];
   public shippers: Shippers;
-  public shipperParent: Shippers = new Shippers();
+  public shipperParent: Shippers;
 
-  private subscription: Subscription = new Subscription();
-  
+  private subscription: Subscription;
+
   formSearch: FormGroup;
 
 
@@ -29,27 +29,29 @@ export class ShippersComponent implements OnInit, OnDestroy {
     private shippersService:
       ShippersService,
     private modalService: NgbModal) {
-    //Refrescar la lista al iniciar..
-    this.getShippers();
   }
 
   // Metodos principales..
 
   ngOnInit(): void {
+    this.subscription = new Subscription();
+    this.shipperParent = new Shippers();
+    this.shippers = new Shippers();
     this.formSearch = this.formBuilder.group({
       search: new FormControl('', Validators.required)
-    });
+    }),
+    this.getShippers();
   }
 
   searchShippers(event) {
-    this.cardShow = true;
     this.subscription.add(
       this.shippersService.readShippers(event).subscribe(
         resp => {
           this.shippers = resp;
         },
-        error => { console.log(error), alert("No se encontro el registro solicitado!") },
-      ));
+        error => { console.log(error), Swal.fire('Algo salio mal!','No se encontro el registro solicitado!', 'error') },
+        () => {this.cardShow = true},
+      ))
   }
 
   getShippers() {
@@ -67,16 +69,12 @@ export class ShippersComponent implements OnInit, OnDestroy {
         resp => {
           console.log(resp);
         },
-        (error: any) => Swal.fire('No se pudo eliminar el registro solicitado!', 'error'),
+        (error: any) => Swal.fire('Algo salio mal!','No se pudo eliminar el registro solicitado!', 'error'),
         () => {
           Swal.fire('Yeah!', 'Empleado eliminado con exito!', 'success')
           this.getShippers()
         },
       ));
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   // Metodos secundarios..
@@ -129,12 +127,12 @@ export class ShippersComponent implements OnInit, OnDestroy {
   handleWarningAlert(id: number) {
 
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this imaginary file!',
+      title: 'Estas seguro?',
+      text: 'No podras recuperar este registro!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, keep it',
+      confirmButtonText: 'Si, eliminar!',
+      cancelButtonText: 'No, mantener',
     }).then((result) => {
 
       if (result.isConfirmed) {
@@ -144,6 +142,11 @@ export class ShippersComponent implements OnInit, OnDestroy {
       }
     })
 
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    console.log("main destroy");
   }
 
 

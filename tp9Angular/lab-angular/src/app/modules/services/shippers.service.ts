@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Shippers} from './models/shippers'
+import {Shippers} from '../models/shippers'
 import {environment} from '../../../environments/environment'
 
 @Injectable({
@@ -36,4 +36,5 @@ export class ShippersService {
   {
     return this.http.put<any>(environment.shippers + 'shippers/', request);
   }
+
 }
