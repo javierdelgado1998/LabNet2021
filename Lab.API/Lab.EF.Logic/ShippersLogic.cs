@@ -65,13 +65,20 @@ namespace Lab.EF.Logic
         }
         public Shippers GetOne(int id)
         {
-            var shipper = GetShipperIfFound(id);
-            return shipper;
+            try
+            {
+                var shipper = context.Shippers.Find(id);
+                return shipper;
+            }
+            catch (Exception)
+            {
+                throw new NotFoundException();
+            }
         }
         private Shippers GetShipperIfFound(int id)
         {
             var shipper = context.Shippers.Find(id);
-            if(shipper == null)
+            if (shipper == null)
             {
                 throw new NotFoundException();
             }
@@ -79,9 +86,16 @@ namespace Lab.EF.Logic
         }
         public List<Shippers> SelecTop(int value)
         {
-            var shippers = (from shipper in context.Shippers
-                            select shipper).Take(value);
-            return shippers.ToList();
+            try
+            {
+                var shippers = (from shipper in context.Shippers
+                                select shipper).Take(value);
+                return shippers.ToList();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error al seleccionar los datos");
+            }
         }
     }
 }

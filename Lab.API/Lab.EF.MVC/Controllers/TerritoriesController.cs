@@ -13,14 +13,21 @@ namespace Lab.EF.MVC.Controllers
         private TerritoriesLogic logic = new TerritoriesLogic();
         public ActionResult Index()
         {
-            List<TerritoriesJoinInfo> territories = logic.JoinRegions();
-            List<TerritoriesView> territoriesViews = territories.Select(t => new TerritoriesView
+            try
             {
-                id = t.id,
-                descripcion = t.descripcion,
-                region = t.region
-            }).ToList();
-            return View(territoriesViews);
+                List<TerritoriesJoinInfo> territories = logic.JoinRegions();
+                List<TerritoriesView> territoriesViews = territories.Select(t => new TerritoriesView
+                {
+                    id = t.id,
+                    descripcion = t.descripcion,
+                    region = t.region
+                }).ToList();
+                return View(territoriesViews);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("index", "Error", new { mssg = ex.Message });
+            }
         }
     }
 }

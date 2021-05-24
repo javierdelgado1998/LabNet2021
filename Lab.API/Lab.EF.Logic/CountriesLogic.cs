@@ -18,18 +18,25 @@ namespace Lab.EF.Logic
         }
         public List<Country> GetCountries()
         {
-            return (from c in countryAPI.GetCountries()
-                    select new Country
-                    {
-                        Name = c.name,
-                        Capital = c.capital,
-                        Flag = c.flag,
-                        languages = c.languages,
-                        NativeName = c.nativeName,
-                        Population = c.population,
-                        Region = c.region,
-                        SubRegion = c.subregion
-                    }).ToList();
+            try
+            {
+                return (from c in countryAPI.GetCountries()
+                        select new Country
+                        {
+                            Name = c.name,
+                            Capital = c.capital,
+                            Flag = c.flag,
+                            languages = c.languages,
+                            NativeName = c.nativeName,
+                            Population = c.population,
+                            Region = c.region,
+                            SubRegion = c.subregion
+                        }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

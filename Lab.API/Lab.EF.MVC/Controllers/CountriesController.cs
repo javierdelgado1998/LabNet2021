@@ -18,20 +18,27 @@ namespace Lab.EF.MVC.Controllers
         }
         public ActionResult Index()
         {
-            var countries = logic.GetCountries();
-            var countriesViews = from c in countries
-                                 select new CountriesView
-                                 {
-                                     Name = c.Name,
-                                     Capital = c.Capital,
-                                     Flag = c.Flag,
-                                     SubRegion = c.SubRegion,
-                                     Region = c.Region,
-                                     languages = c.languages,
-                                     NativeName = c.NativeName,
-                                     Population = c.Population
-                                 };
-            return View(countriesViews.ToList());
+            try
+            {
+                var countries = logic.GetCountries();
+                var countriesViews = from c in countries
+                                     select new CountriesView
+                                     {
+                                         Name = c.Name,
+                                         Capital = c.Capital,
+                                         Flag = c.Flag,
+                                         SubRegion = c.SubRegion,
+                                         Region = c.Region,
+                                         languages = c.languages,
+                                         NativeName = c.NativeName,
+                                         Population = c.Population
+                                     };
+                return View(countriesViews.ToList());
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("index", "Error", new { mssg = ex.Message });
+            }
         }
     }
 }

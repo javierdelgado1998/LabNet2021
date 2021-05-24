@@ -1,4 +1,5 @@
-﻿using Lab.EF.Entities;
+﻿using Lab.EF.API.Models;
+using Lab.EF.Entities;
 using Lab.EF.Logic;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,15 @@ namespace Lab.EF.API.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, shippersLogic.GetAll());
+                List<ShipperAPIView> shippersViews = new List<ShipperAPIView>();
+                List<Shippers> shippers = shippersLogic.GetAll();
+                shippersViews = shippers.Select(s => new ShipperAPIView
+                {
+                    Id = s.ShipperID,
+                    CompanyName = s.CompanyName,
+                    Phone = s.Phone,
+                }).ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, shippersViews);
             }
             catch (Exception ex)
             {
@@ -34,7 +43,19 @@ namespace Lab.EF.API.Controllers
         {
             try
             {
-                return Ok(shippersLogic.GetOne(id));
+                var shipperView = new ShipperAPIView();
+                var shipper = shippersLogic.GetOne(id);
+                if (shipper != null)
+                {
+                    shipperView.Id = shipper.ShipperID;
+                    shipperView.CompanyName = shipper.CompanyName;
+                    shipperView.Phone = shipper.Phone;
+                    return Ok(shipperView);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
             catch (Exception)
             {
@@ -43,11 +64,14 @@ namespace Lab.EF.API.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage Post([FromBody] Shippers shippers)
+        public HttpResponseMessage Post([FromBody] ShipperAPIView shipperView)
         {
             try
             {
-                shippersLogic.Add(shippers);
+                var shipper = new Shippers();
+                shipper.CompanyName = shipperView.CompanyName;
+                shipper.Phone = shipperView.Phone;
+                shippersLogic.Add(shipper);
                 return Request.CreateResponse(HttpStatusCode.Created);
             }
             catch (Exception ex)
@@ -57,11 +81,15 @@ namespace Lab.EF.API.Controllers
         }
 
         [HttpPut]
-        public HttpResponseMessage Put([FromBody] Shippers shippers)
+        public HttpResponseMessage Put([FromBody] ShipperAPIView shipperView)
         {
             try
             {
-                shippersLogic.Update(shippers);
+                var shipper = new Shippers();
+                shipper.ShipperID = shipperView.Id;
+                shipper.CompanyName = shipperView.CompanyName;
+                shipper.Phone = shipperView.Phone;
+                shippersLogic.Update(shipper);
                 return Request.CreateResponse(HttpStatusCode.NoContent);
             }
             catch (Exception ex)

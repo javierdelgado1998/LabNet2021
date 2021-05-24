@@ -14,41 +14,55 @@ namespace Lab.EF.MVC.Controllers
         private ShippersLogic logic = new ShippersLogic();
         public ActionResult Index(int? value)
         {
-            List<ShippersView> shippersViews = new List<ShippersView>();
-            if(value == null)
+            try
             {
-                List<Shippers> shippers = logic.GetAll();
-                shippersViews = shippers.Select(s => new ShippersView
+                List<ShippersView> shippersViews = new List<ShippersView>();
+                if (value == null)
                 {
-                    Id = s.ShipperID,
-                    CompanyName = s.CompanyName,
-                    Phone = s.Phone,
-                }).ToList();
-                return View(shippersViews);
+                    List<Shippers> shippers = logic.GetAll();
+                    shippersViews = shippers.Select(s => new ShippersView
+                    {
+                        Id = s.ShipperID,
+                        CompanyName = s.CompanyName,
+                        Phone = s.Phone,
+                    }).ToList();
+                    return View(shippersViews);
+                }
+                else
+                {
+                    List<Shippers> shippers = logic.SelecTop((int)value);
+                    shippersViews = shippers.Select(s => new ShippersView
+                    {
+                        Id = s.ShipperID,
+                        CompanyName = s.CompanyName,
+                        Phone = s.Phone,
+                    }).ToList();
+                    return View(shippersViews);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                List<Shippers> shippers = logic.SelecTop((int)value);
-                shippersViews = shippers.Select(s => new ShippersView
-                {
-                    Id = s.ShipperID,
-                    CompanyName = s.CompanyName,
-                    Phone = s.Phone,
-                }).ToList();
-                return View(shippersViews);
+                return RedirectToAction("index", "Error", new { mssg = ex.Message });
             }
         }
         public ActionResult InsertUpdate(int? id)
         {
             ShippersView shipper = new ShippersView();
-            foreach (var s in logic.GetAll())
+            try
             {
-                if(s.ShipperID == id)
+                if (id != null)
                 {
-                    shipper.CompanyName = s.CompanyName;
-                    shipper.Phone = s.Phone;
-                    break;
+                    var shipperLogic = logic.GetOne((int)id);
+                    if (shipperLogic != null)
+                    {
+                        shipper.CompanyName = shipperLogic.CompanyName;
+                        shipper.Phone = shipperLogic.Phone;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("index", "Error", new { mssg = ex.Message });
             }
             return View(shipper);
         }
@@ -74,7 +88,7 @@ namespace Lab.EF.MVC.Controllers
                     return RedirectToAction("index");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return RedirectToAction("index", "Error", new { mssg = ex.Message });
             }
